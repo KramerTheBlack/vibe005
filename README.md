@@ -1,6 +1,8 @@
 # Task Manager
 
 A full-stack task management application built with microservices architecture.
+<img width="1867" height="1000" alt="изображение" src="https://github.com/user-attachments/assets/831c591d-d15a-4782-a2ff-d9e0db0b98a7" />
+
 
 ## Architecture
 
