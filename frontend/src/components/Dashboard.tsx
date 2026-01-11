@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
+import { useLanguage } from './LanguageContext';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
@@ -61,6 +62,7 @@ const DroppableColumn: React.FC<{ status: string; tasks: Task[]; onUpdate: (id: 
 
 const Dashboard: React.FC = () => {
   const { logout } = useAuth();
+  const { t } = useLanguage();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [weather, setWeather] = useState<any>(null);
   const [analytics, setAnalytics] = useState<any>(null);
@@ -122,30 +124,30 @@ const Dashboard: React.FC = () => {
   };
 
   const groupedTasks = {
-    'To Do': tasks.filter(t => t.status === 'To Do'),
-    'In Progress': tasks.filter(t => t.status === 'In Progress'),
-    'Done': tasks.filter(t => t.status === 'Done'),
+    [t('toDo')]: tasks.filter(t => t.status === 'To Do'),
+    [t('inProgress')]: tasks.filter(t => t.status === 'In Progress'),
+    [t('done')]: tasks.filter(t => t.status === 'Done'),
   };
 
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4">
-        <h1 className="text-2xl font-bold">Task Manager</h1>
-        <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+        <h1 className="text-2xl font-bold">{t('taskManager')}</h1>
+        <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded">{t('logout')}</button>
       </div>
 
       <form onSubmit={createTask} className="mb-4 p-4 bg-gray-50 rounded">
-        <h2 className="text-xl font-bold mb-2">Add New Task</h2>
+        <h2 className="text-xl font-bold mb-2">{t('addNewTask')}</h2>
         <input
           type="text"
-          placeholder="Title"
+          placeholder={t('title')}
           value={newTask.title}
           onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
           className="w-full p-2 mb-2 border"
           required
         />
         <textarea
-          placeholder="Description"
+          placeholder={t('description')}
           value={newTask.description}
           onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
           className="w-full p-2 mb-2 border"
@@ -155,23 +157,23 @@ const Dashboard: React.FC = () => {
           onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
           className="w-full p-2 mb-2 border"
         >
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
+          <option value="Low">{t('low')}</option>
+          <option value="Medium">{t('medium')}</option>
+          <option value="High">{t('high')}</option>
         </select>
         <input
           type="text"
-          placeholder="Tags (comma separated)"
+          placeholder={t('tags')}
           value={newTask.tags}
           onChange={(e) => setNewTask({ ...newTask, tags: e.target.value })}
           className="w-full p-2 mb-2 border"
         />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Add Task</button>
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">{t('addTask')}</button>
       </form>
 
       {weather && (
         <div className="bg-blue-100 p-4 rounded mb-4">
-          <h2 className="text-xl font-bold">Weather in {weather.city}</h2>
+          <h2 className="text-xl font-bold">{t('weatherIn')} {weather.city}</h2>
           <p>{weather.temperature}°C, {weather.description}</p>
         </div>
       )}
@@ -186,7 +188,7 @@ const Dashboard: React.FC = () => {
 
       {analytics && (
         <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">Analytics</h2>
+          <h2 className="text-xl font-bold mb-4">{t('analytics')}</h2>
           <Bar
             data={{
               labels: Object.keys(analytics.tagDistribution),
@@ -197,8 +199,8 @@ const Dashboard: React.FC = () => {
               }],
             }}
           />
-          <p>Completed last week: {analytics.completedLastWeek}</p>
-          <p>Avg completion time: {analytics.avgCompletionTimeHours.toFixed(2)} hours</p>
+          <p>{t('completedLastWeek')}: {analytics.completedLastWeek}</p>
+          <p>{t('avgCompletionTime')}: {analytics.avgCompletionTimeHours.toFixed(2)} {t('hours')}</p>
         </div>
       )}
     </div>
