@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - websocket-server
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/taskmanager
+      - JWT_SECRET=supersecret
+    depends_on:
+      - postgres
+      - service-worker
+      - websocket-server
+
+  service-worker:
+    build: ./service-worker
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENWEATHER_API_KEY=demo_key  # Replace with actual key
+    depends_on:
+      - redis
+
+  websocket-server:
+    build: ./websocket-server
+    ports:
+      - "3001:3001"
+    environment:
+      - JWT_SECRET=supersecret
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=taskmanager
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    driver: bridge
