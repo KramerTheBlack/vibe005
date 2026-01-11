@@ -60,7 +60,7 @@ const DroppableColumn: React.FC<{ status: string; tasks: Task[]; onUpdate: (id: 
 };
 
 const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [weather, setWeather] = useState<any>(null);
   const [analytics, setAnalytics] = useState<any>(null);
